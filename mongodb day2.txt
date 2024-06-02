@@ -1,0 +1,288 @@
+db.users.insertMany([{ 
+  "username": "John",
+  "email": "john@gmail.com",
+  "password": "john@123",
+  "batch": 49
+},
+{ 
+  "username": "Dave",
+  "email": "dave@gmail.com",
+  "password": "dave@123",
+  "batch": 50
+},
+{ 
+  "username": "Peter",
+  "email": "peter@gmail.com",
+  "password": "peter@123",
+  "batch": 51
+},
+{ 
+  "username": "Eva",
+  "email": "eva@gmail.com",
+  "password": "eva@123",
+  "batch": 52
+},
+{ 
+  "username": "Sona",
+  "email": "sona@gmail.com",
+  "password": "sona@123",
+  "batch": 53
+},]);
+db.codekata.insertMany([{
+  "username": "John",
+  "total_problems": 10,
+  "solved_problems": 10,
+  "topic": "Inputoutput"
+},
+{ 
+  "username": "Dave",
+ "total_problems": 30,
+  "solved_problems": 25,
+  "topic": "Absolute Beginner"
+},
+{ 
+  "username": "Peter",
+  "total_problems":192,
+  "solved_problems":100,
+  "topic": "Mathematics"
+},
+{ 
+  "username": "Eva",
+ "total_problems": 308,
+  "solved_problems":200,
+  "topic": "Array"
+},
+{ 
+  "username": "Sona",
+  "total_problems": 196,
+  "solved_problems": 75,
+  "topic": "Strings"
+},]);
+db.attendance.insertMany([{
+  "username": "John",
+  "SessionName": "Array",
+  "Date":"2020-10-15",
+  "Status":"present"
+  
+},
+{ 
+  "username": "Dave",
+ "SessionName": "Mongodb",
+  "Date":"2020-10-12",
+"Status":"absent"
+},
+{ 
+  "username": "Peter",
+   "SessionName": "Callback",
+  "Date":"2020-10-30",
+"Status":"present"
+},
+{ 
+  "username": "Eva",
+ "SessionName": "Promise",
+  "Date":"2020-10-25",
+"Status":"absent"
+},
+{ 
+  "username": "Sona",
+   "SessionName": "React",
+  "Date":"2020-10-04",
+"Status":"present"
+},]);
+
+db.topics.insertMany([{
+  "Topicname":"Array",
+  "Date":"2020-10-15",
+  
+  
+},
+{ 
+  "Topicname":"Callback",
+  "Date":"2020-10-12",
+
+},
+{ 
+  "Topicname":"Promise",
+  "Date":"2020-10-30",
+
+},
+{ 
+  "Topicname":"React",
+  "Date":"2020-10-25",
+
+},
+{ 
+  "Topicname":"Mongodb",
+  "Date":"2020-10-04",
+
+},]);
+db.tasks.insertMany([{
+  "Taskname":"Array",
+  "SubmittedDate":"2020-10-15",
+   
+  
+  
+},
+{ 
+  "Taskname":"Callback",
+  "SubmittedDate":"2020-10-12",
+
+},
+{ 
+  "Taskname":"Promise",
+  "SubmittedDate":"2020-10-30",
+
+},
+{ 
+  "Taskname":"React",
+  "SubmittedDate":"2020-10-25",
+
+},
+{ 
+  "Taskname":"Mongodb",
+  "SubmittedDate":"2020-10-04",
+
+},]);
+
+db.company_drives.insertMany([{
+  "Companyname":"TCS",
+  "InDate":"2021-01-10",
+   "username":"Dave"
+
+  
+},
+{ 
+  "Companyname":"Cognizant",
+  "InDate":"2021-02-13",
+   "username":"Peter"
+
+},
+{ 
+  "Companyname":"WellsFargo",
+  "InDate":"2021-03-20",
+   "username":"Eva"
+
+},
+{  "Companyname":"BNY Mellon",
+"InDate":"2021-04-04",
+ "username":"John"
+
+},
+{ 
+  "Companyname":"Oracle",
+  "InDate":"2021-05-09",
+   "username":"Sona"
+
+},]);
+db.mentors.insertMany([{
+  "Mentorname":"Mentor1",
+  "batch":52,
+  "count":20
+  
+  
+},
+{ 
+  "Mentorname":"Mentor2",
+  "batch":53,
+  "count":25
+
+},
+{ 
+  "Mentorname":"Mentor3",
+  "batch":50,
+  "count":19
+
+},
+{ 
+  "Mentorname":"Mentor4",
+  "batch":51,
+  "count":15
+
+},
+{ 
+  "Mentorname":"Mentor5",
+  "batch":49,
+  "count":10
+
+},]);
+1.db.tasks.find({ SubmittedDate: {$gte: ISODate('2020-10-01'), $lt: ISODate('2020-10-31') } }).toArray();
+db.topics.find({
+  Date: {
+    $gte: ISODate("2020-10-01"),
+    $lte: ISODate("2020-10-31")
+  }
+}).toArray();
+
+2.db.company_drives.find({
+  InDate: {
+    $gte: ISODate("2020-10-15"),
+    $lte: ISODate("2020-10-31")
+  }
+}).toArray();
+
+3.db.company_drives.aggregate([
+  {
+    $lookup: {
+      from: "users",
+      localField: "username",
+      foreignField: "username",
+      as: "students"
+    }
+  }
+]).toArray();
+
+4.db.codekata.aggregate([
+  {
+    $group: {
+      _id: "$username",
+      total_problems_solved: { $sum: "$solved_problems" }
+    }
+  }
+]).toArray();
+
+5.db.mentors.find({
+  count: { $gt: 15 }
+}).toArray();
+
+6 db.users.aggregate([
+  {
+    $lookup: {
+      from: "attendance",
+      localField: "username",
+      foreignField: "username",
+      as: "attendanceInfo"
+    }
+  },
+  {
+    $lookup: {
+      from: "tasks",
+      localField: "username",
+      foreignField: "username",
+      as: "taskInfo"
+    }
+  },
+  {
+    $match: {
+      $or: [
+        {
+          "attendanceInfo": { $elemMatch: { Date: { $gte: ISODate("2020-10-15"), $lte: ISODate("2020-10-31") }, Status: "absent" } }
+        },
+        {
+          "taskInfo": { $not: { $elemMatch: { SubmittedDate: { $gte: ISODate("2020-10-15"), $lte: ISODate("2020-10-31") } } } }
+        }
+      ]
+    }
+  },
+  {
+    $group: {
+      _id: null,
+      count: { $sum: 1 }
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      count: 1
+    }
+  }
+]).toArray();
